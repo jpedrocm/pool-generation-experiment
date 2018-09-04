@@ -25,11 +25,15 @@ The goal of this homework is to perform an experiment comparing two different po
 
 ### Reproducing
 
-* Run the experiment
+* Enter the code/ folder inside your local repository
+* Run the experiment to produce all predictions
 ```
 python main.py
 ```
-* Check the results in the .txt files of the results/ folder
+* Once finished, generate all results
+```
+python generate_results.py
+```
 
 ## Author
 
