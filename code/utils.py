@@ -8,6 +8,8 @@ from sklearn.linear_model import Perceptron
 from sklearn.tree import DecisionTreeClassifier
 from sklearn.ensemble import BaggingClassifier
 
+from prefit_voting_classifier import VotingClassifier
+
 
 def load_experiment_configuration():
 	STRATEGY_PERCENTAGE = 0.5
@@ -24,7 +26,7 @@ def load_experiment_configuration():
 	return config
 
 def _create_base_classifiers(cpus = -1):
-	perceptron = partial(Perceptron, n_jobs = cpus)
+	perceptron = partial(Perceptron, max_iter = 100, n_jobs = cpus)
 	decision_tree = partial(DecisionTreeClassifier)
 
 	return [perceptron, decision_tree]
@@ -55,3 +57,9 @@ def load_dataset(set_filename):
 	instances = dataframe.drop(columns = "defects")
 
 	return instances, gold_labels
+
+def get_voting_clf(pool_clf):
+	base_estimators = pool_clf.estimators_
+	pool_size = len(base_estimators)
+	list_estimators = [(str(i), base_estimators[i]) for i in xrange(pool_size)]
+	return VotingClassifier(list_estimators, voting = 'hard')
