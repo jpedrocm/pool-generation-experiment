@@ -69,11 +69,11 @@ def get_voting_clf(pool_clf):
 	return VotingClassifier(clfs_tuples, clfs_feats, voting = 'hard')
 
 def save_predictions(data):
-	with open('../results/all_predictions.json', 'w') as outfile:
+	with open('../predictions/all_predictions.json', 'w') as outfile:
 		json.dump(data, outfile)
 
 def load_predictions(filename):
-	with open('../results/all_predictions.json', 'r') as outfile:
+	with open('../predictions/all_predictions.json', 'r') as outfile:
 		return json.load(outfile)
 
 def sample_training_data(sampling_percentage, possible_train_instances, 
