@@ -9,8 +9,9 @@ rn.seed(2264)
 
 from utils import load_datasets_filenames, load_experiment_configuration
 from utils import load_dataset, get_voting_clf, save_predictions
+from utils import sample_training_data
 
-from sklearn.model_selection import StratifiedKFold, train_test_split
+from sklearn.model_selection import StratifiedKFold
 
 
 
@@ -43,13 +44,12 @@ if __name__ == "__main__":
 			predictions[dataset_filename][fold]["gold_labels"] = test_gold_labels
 			
 			for sampling_percentage in config["sampling_percentages"]:
-				sampled = train_test_split(possible_train_instances,
-					                       possible_train_labels,
-					                       train_size = sampling_percentage,
-				                           stratify = possible_train_labels)
+				sampled = sample_training_data(sampling_percentage, 
+					                           possible_train_instances,
+					                           possible_train_labels)
 
 				train_instances = sampled[0].values
-				train_gold_labels = sampled[2].values.ravel()
+				train_gold_labels = sampled[1].values.ravel()
 
 				predictions[dataset_filename][fold][str(sampling_percentage)] = {}
 				subpredictions = predictions[dataset_filename][fold][str(sampling_percentage)]

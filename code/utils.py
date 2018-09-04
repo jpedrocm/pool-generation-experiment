@@ -4,6 +4,7 @@ from functools import partial
 import pandas as pd
 from scipy.io import arff
 
+from sklearn.model_selection import train_test_split
 from sklearn.linear_model import Perceptron
 from sklearn.tree import DecisionTreeClassifier
 from sklearn.ensemble import BaggingClassifier
@@ -69,3 +70,16 @@ def save_predictions(data):
 	import json
 	with open('../results/all_predictions.json', 'w') as outfile:
 		json.dump(data, outfile)
+
+def sample_training_data(sampling_percentage, possible_train_instances, 
+	                     possible_train_labels):
+
+	if int(sampling_percentage) != 1:
+		sample = train_test_split(possible_train_instances,
+					              possible_train_labels,
+					              train_size = sampling_percentage,
+				                  stratify = possible_train_labels)
+
+		return sample[0], sample[2]
+	else:
+		return possible_train_instances, possible_train_labels 
