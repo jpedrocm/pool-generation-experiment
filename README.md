@@ -12,6 +12,7 @@ The goal of this homework is to perform an experiment comparing two different po
 
 * [Python](https://www.python.org/) >= 2.7.15
 * [NumPy](http://www.numpy.org/) >= 1.15.1
+* [SciPy](https://www.scipy.org/) >= 1.1.0
 * [pandas](https://pandas.pydata.org/) >= 0.23.4
 * [scikit-learn](http://scikit-learn.org/stable/) >= 0.19.1
 
@@ -19,8 +20,8 @@ The goal of this homework is to perform an experiment comparing two different po
 
 * Clone this repository into your machine
 * Download and install all the requirements listed above in the given order
-* Download these datasets: [CM1/Software defect prediction](http://promise.site.uottawa.ca/SERepository/datasets/cm1.arff) and [Cocomo81/Software cost estimation](http://promise.site.uottawa.ca/SERepository/datasets/jm1.arff)
-* Place both datasets inside the data/ folder
+* Download the CM1 and JM1 software defect prediction datasets in .arff format from the [Promise repository](http://promise.site.uottawa.ca/SERepository/datasets-page.html) and do not change their names
+* Place both .arff files inside the data/ folder
 
 ### Reproducing
 
