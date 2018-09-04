@@ -16,9 +16,13 @@ from sklearn.model_selection import StratifiedKFold, train_test_split
 
 if __name__ == "__main__":
 
+	print "Load configurations"
+
 	datasets_filenames = load_datasets_filenames()
 	config = load_experiment_configuration()
 	predictions = {}
+
+	print "Started experiment"
 
 	for dataset_filename in datasets_filenames:
 		instances, gold_labels = load_dataset(dataset_filename)
@@ -47,7 +51,7 @@ if __name__ == "__main__":
 				train_instances = sampled[0].values
 				train_gold_labels = sampled[2].values.ravel()
 
-				preds[dataset_filename][fold][str(sampling_percentage)] = {}
+				predictions[dataset_filename][fold][str(sampling_percentage)] = {}
 				subpredictions = predictions[dataset_filename][fold][str(sampling_percentage)]
 
 				for strategy_name, strategy in config["generation_strategies"]:
@@ -61,4 +65,6 @@ if __name__ == "__main__":
 					    cur_predictions = hard_voting_clf.predict(test_instances)
 					    subpredictions[strategy_name][clf_name] = cur_predictions
 
+	print "Finished experiment"
 	save_predictions(predictions)
+	print "Stored predictions"
