@@ -4,8 +4,9 @@ from sklearn.utils.validation import check_is_fitted
 
 class VotingClassifier(object):
     """Stripped-down version of VotingClassifier that uses prefit estimators"""
-    def __init__(self, estimators, voting='hard', weights=None):
+    def __init__(self, estimators, feats_per_estimator, voting='hard', weights=None):
         self.estimators = [e[1] for e in estimators]
+        self.feats_per_estimator = feats_per_estimator
         self.named_estimators = dict(estimators)
         self.voting = voting
         self.weights = weights
@@ -29,6 +30,7 @@ class VotingClassifier(object):
         """
 
         check_is_fitted(self, 'estimators')
+
         if self.voting == 'soft':
             maj = np.argmax(self.predict_proba(X), axis=1)
 
@@ -97,4 +99,8 @@ class VotingClassifier(object):
 
     def _predict(self, X):
         """Collect results from clf.predict calls. """
-        return np.asarray([clf.predict(X) for clf in self.estimators]).T
+        return np.asarray([self.estimators[i].predict(self._select_features(X, i)) for i in xrange(len(self.estimators))]).T
+
+    def _select_features(self, X, estimator_index):
+        X_selected = X[:, self.feats_per_estimator[estimator_index]]
+        return X_selected

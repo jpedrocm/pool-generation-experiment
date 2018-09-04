@@ -29,7 +29,7 @@ def _create_base_classifiers(cpus = -1):
 	perceptron = partial(Perceptron, max_iter = 100, n_jobs = cpus)
 	decision_tree = partial(DecisionTreeClassifier)
 
-	return [perceptron, decision_tree]
+	return [("Perceptron", perceptron), ("Decision Tree", decision_tree)]
 
 def _create_generation_strategies(strategy_percentage, cpus = -1):
 	bagging = partial(BaggingClassifier, max_samples = strategy_percentage, 
@@ -38,7 +38,7 @@ def _create_generation_strategies(strategy_percentage, cpus = -1):
 		                       max_features = strategy_percentage,
 		                       n_jobs = cpus)
 
-	return [bagging, random_subspaces]
+	return [("Bagging", bagging), ("Random Subspaces", random_subspaces)]
 
 def load_datasets_filenames():
 	filenames = ["cm1", "jm1"]
@@ -59,7 +59,13 @@ def load_dataset(set_filename):
 	return instances, gold_labels
 
 def get_voting_clf(pool_clf):
-	base_estimators = pool_clf.estimators_
-	pool_size = len(base_estimators)
-	list_estimators = [(str(i), base_estimators[i]) for i in xrange(pool_size)]
-	return VotingClassifier(list_estimators, voting = 'hard')
+	base_clfs = pool_clf.estimators_
+	clfs_feats = pool_clf.estimators_features_
+	pool_size = len(base_clfs)
+	clfs_tuples = [(str(i), base_clfs[i]) for i in xrange(pool_size)]
+	return VotingClassifier(clfs_tuples, clfs_feats, voting = 'hard')
+
+def save_predictions(data):
+	import json
+	with open('../results/all_predictions.json', 'w') as outfile:
+		json.dump(data, outfile)
