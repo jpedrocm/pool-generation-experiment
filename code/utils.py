@@ -54,6 +54,7 @@ def load_dataset(set_filename):
 	data, _ = arff.loadarff(full_filepath)
 
 	dataframe = pd.DataFrame(data)
+	dataframe.dropna(inplace=True)
 
 	gold_labels = pd.DataFrame(dataframe["defects"])
 	instances = dataframe.drop(columns = "defects")
