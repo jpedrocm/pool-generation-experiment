@@ -42,7 +42,7 @@ if __name__ == "__main__":
 			test_gold_labels = instances.iloc[test_idxs].values.ravel()
 
 			predictions[dataset_filename][fold] = {}
-			predictions[dataset_filename][fold]["gold_labels"] = test_gold_labels
+			predictions[dataset_filename][fold]["gold_labels"] = test_gold_labels.astype(int).tolist()
 			
 			for sampling_percentage in config["sampling_percentages"]:
 				sampled = sample_training_data(sampling_percentage, 
@@ -64,7 +64,7 @@ if __name__ == "__main__":
 
 					    hard_voting_clf = get_voting_clf(clf_pool)
 					    cur_predictions = hard_voting_clf.predict(test_instances)
-					    subpredictions[strategy_name][clf_name] = cur_predictions
+					    subpredictions[strategy_name][clf_name] = cur_predictions.astype(int).tolist()
 
 					    print "Experimento " + str(exp)
 					    exp+=1
