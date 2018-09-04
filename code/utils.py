@@ -1,6 +1,7 @@
 ###############################################################################
 from functools import partial
 
+import json
 import pandas as pd
 from scipy.io import arff
 
@@ -27,7 +28,7 @@ def load_experiment_configuration():
 	return config
 
 def _create_base_classifiers(cpus = -1):
-	perceptron = partial(Perceptron, max_iter = 100, n_jobs = cpus)
+	perceptron = partial(Perceptron, n_jobs = cpus)
 	decision_tree = partial(DecisionTreeClassifier)
 
 	return [("Perceptron", perceptron), ("Decision Tree", decision_tree)]
@@ -67,9 +68,12 @@ def get_voting_clf(pool_clf):
 	return VotingClassifier(clfs_tuples, clfs_feats, voting = 'hard')
 
 def save_predictions(data):
-	import json
 	with open('../results/all_predictions.json', 'w') as outfile:
 		json.dump(data, outfile)
+
+def load_predictions(filename):
+	with open('../results/all_predictions.json', 'r') as outfile:
+		return json.load(outfile)
 
 def sample_training_data(sampling_percentage, possible_train_instances, 
 	                     possible_train_labels):
