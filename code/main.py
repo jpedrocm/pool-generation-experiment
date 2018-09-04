@@ -22,6 +22,7 @@ if __name__ == "__main__":
 	datasets_filenames = load_datasets_filenames()
 	config = load_experiment_configuration()
 	predictions = {}
+	exp = 1
 
 	print "Started experiment"
 
@@ -64,6 +65,9 @@ if __name__ == "__main__":
 					    hard_voting_clf = get_voting_clf(clf_pool)
 					    cur_predictions = hard_voting_clf.predict(test_instances)
 					    subpredictions[strategy_name][clf_name] = cur_predictions
+
+					    print "Experimento " + str(exp)
+					    exp+=1
 
 	print "Finished experiment"
 	save_predictions(predictions)
