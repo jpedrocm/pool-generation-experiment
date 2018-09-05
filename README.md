@@ -25,8 +25,8 @@ The goal of this homework is to perform an experiment comparing two different po
 
 ### Reproducing
 
-* Enter the code/ folder inside your local repository
-* Run the experiment to produce all predictions
+* Enter into the code/ folder in your local repository
+* Run the experiment to produce every ensemble's predictions
 ```
 python main.py
 ```
@@ -56,3 +56,7 @@ python generate_results.py
 ## License
 
 This project is licensed under the MIT License - see the LICENSE.md file for details.
+
+## Acknowledgements
+
+Thanks to @tomquisel for providing [here](https://gist.github.com/tomquisel/a421235422fdf6b51ec2ccc5e3dee1b4) an initial version of a Voting Classifier for prefit base classifiers.
