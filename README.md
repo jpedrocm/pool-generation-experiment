@@ -35,6 +35,20 @@ python main.py
 python generate_results.py
 ```
 
+## Project Structure
+
+    .            
+    ├── code                             # Code files
+    │   ├── generate_results.py          # generate metric results
+    │   ├── main.py                      # generate models predictions
+    │   ├── prefit_voting_classifier.py  # voting ensemble for prefitted base classifiers
+    │   └── utils.py                     # utils functions
+    ├── data                             # Datasets files
+    ├── predictions                      # Models predictions files
+    ├── results                          # Metrics files
+    ├── LICENSE.md
+    └── README.md
+
 ## Author
 
 * [jpedrocm](https://github.com/jpedrocm)
