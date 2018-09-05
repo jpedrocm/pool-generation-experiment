@@ -9,12 +9,13 @@ The goal of this homework is to perform an experiment comparing two different po
 ## Getting Started
 
 ### Requirements
-
+```
 * [Python](https://www.python.org/) >= 2.7.15
 * [NumPy](http://www.numpy.org/) >= 1.15.1
 * [SciPy](https://www.scipy.org/) >= 1.1.0
 * [pandas](https://pandas.pydata.org/) >= 0.23.4
 * [scikit-learn](http://scikit-learn.org/stable/) >= 0.19.1
+```
 
 ### Installing
 
@@ -41,7 +42,7 @@ python generate_results.py
     ├── code                             # Code files
     │   ├── generate_results.py          # generate metric results
     │   ├── main.py                      # generate models predictions
-    │   ├── prefit_voting_classifier.py  # voting ensemble for prefitted base classifiers
+    │   ├── prefit_voting_classifier.py  # voting classifier for prefit base classifiers
     │   └── utils.py                     # utils functions
     ├── data                             # Datasets files
     ├── predictions                      # Models predictions files
