@@ -17,40 +17,42 @@ from sklearn.model_selection import StratifiedKFold
 
 if __name__ == "__main__":
 
-	print "Load configurations"
+	print "Loading configurations"
 
 	datasets_filenames = load_datasets_filenames()
 	config = load_experiment_configuration()
 	predictions = {}
 	exp = 1
 
-	print "Started experiment"
+	print "Starting experiment"
 
 	for dataset_filename in datasets_filenames:
 		instances, gold_labels = load_dataset(dataset_filename)
 		skfold = StratifiedKFold(n_splits = config["num_folds"],
 			                     shuffle = True)
 
+		gold_labels = (gold_labels["defects"] == 'true').astype(int)
+
 		predictions[dataset_filename] = {}
 
 		for fold, division in enumerate(skfold.split(X=instances, y=gold_labels), 1):
 			train_idxs = division[0]
 			test_idxs = division[1]
-			possible_train_instances = instances.iloc[train_idxs]
-			possible_train_labels = gold_labels.iloc[train_idxs]
+			possible_train_instances = instances.iloc[train_idxs].values
+			possible_train_labels = gold_labels.iloc[train_idxs].values.ravel()
 			test_instances = instances.iloc[test_idxs].values
-			test_gold_labels = instances.iloc[test_idxs].values.ravel()
+			test_gold_labels = gold_labels.iloc[test_idxs].values.ravel()
 
 			predictions[dataset_filename][fold] = {}
-			predictions[dataset_filename][fold]["gold_labels"] = test_gold_labels.astype(int).tolist()
-			
+			predictions[dataset_filename][fold]["gold_labels"] = test_gold_labels.tolist()
+
 			for sampling_percentage in config["sampling_percentages"]:
 				sampled = sample_training_data(sampling_percentage, 
 					                           possible_train_instances,
 					                           possible_train_labels)
 
-				train_instances = sampled[0].values
-				train_gold_labels = sampled[1].values.ravel()
+				train_instances = sampled[0]
+				train_gold_labels = sampled[1]
 
 				predictions[dataset_filename][fold][str(sampling_percentage)] = {}
 				subpredictions = predictions[dataset_filename][fold][str(sampling_percentage)]
@@ -66,7 +68,7 @@ if __name__ == "__main__":
 					    cur_predictions = hard_voting_clf.predict(test_instances)
 					    subpredictions[strategy_name][clf_name] = cur_predictions.astype(int).tolist()
 
-					    print "Experimento " + str(exp)
+					    print "Experiment " + str(exp)
 					    exp+=1
 
 	print "Finished experiment"
