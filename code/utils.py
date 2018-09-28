@@ -1,6 +1,7 @@
 ###############################################################################
 from functools import partial
 from math import sqrt
+from copy import deepcopy
 
 import json
 import pandas as pd
@@ -93,20 +94,24 @@ def sample_training_data(sampling_percentage, possible_train_instances,
 	else:
 		return possible_train_instances, possible_train_labels
 
-def _g_mean_score(gold_labels, predicted_labels):
-	precision = precision_score(gold_labels, predicted_labels)
-	recall = recall_score(gold_labels, predicted_labels)
+def _g_mean_score(gold_labels, predicted_labels, average):
+	precision = precision_score(gold_labels, predicted_labels, average=average)
+	recall = recall_score(gold_labels, predicted_labels, average=average)
 	return sqrt(precision*recall)
 
 def _calculate_metrics(gold_labels, predicted_labels):
 
 	metrics = {}
-	#metrics["auc"] = roc_auc_score(gold_labels, predicted_labels)
-	metrics["g_mean"] = _g_mean_score(gold_labels, predicted_labels)
-	metrics["f1"] = f1_score(gold_labels, predicted_labels)
+	metrics["auc"] = roc_auc_score(gold_labels, predicted_labels, average='macro')
+	metrics["g_mean"] = _g_mean_score(gold_labels, predicted_labels, average='macro')
+	metrics["f1"] = f1_score(gold_labels, predicted_labels, average='macro')
 	metrics["acc"] = accuracy_score(gold_labels, predicted_labels)
 
 	return metrics
+
+def _check_create_dict(given_dict, new_key):
+	if new_key not in given_dict.keys():
+		given_dict[new_key] = {}
 
 def generate_metrics(predictions_dict):
 	metrics = {}
@@ -120,41 +125,46 @@ def generate_metrics(predictions_dict):
 			del fold_dict["gold_labels"]
 
 			for sampling_pct, sampling_dict in fold_dict.iteritems():
-				metrics[set_name][sampling_pct] = {}
+				_check_create_dict(metrics[set_name], sampling_pct)
 
 				for strategy, strategy_dict in sampling_dict.iteritems():
-					metrics[set_name][sampling_pct][strategy] = {}
+					_check_create_dict(metrics[set_name][sampling_pct], 
+						               strategy)
 
 					for clf, predicted in strategy_dict.iteritems():
 						metrics_str = metrics[set_name][sampling_pct][strategy]
+
 						fold_metrics = _calculate_metrics(gold_labels, predicted)
+
 						if clf not in metrics_str.keys():
 						    metrics_str[clf] = [fold_metrics]
 						else:
-						    metrics_str[clf].append(fold_metrics)
+							metrics_str[clf].append(fold_metrics)
 
 	return metrics
 
 def _summarize_metrics_folds(metrics_folds):
 	summary = {}
-	metrics_names = metrics_folds[0].keys()
+	metrics = metrics_folds[0].keys()
 
-	for metric_name in metrics_names:
-		scores = [score for score in metrics_folds[i][metric_name] for i in xrange(len(metrics_folds))]
-		summary[metric_name] = [np.mean(scores), np.std(scores)]
+	for metric in metrics:
+		scores = [scr for scr in metrics_folds[i][metric] for i in xrange(len(metrics_folds))]
+		summary[metric] = [np.mean(scores), np.std(scores)]
 
 	return summary
 
 def summarize_metrics_folds(metrics_dict):
 
-	summary = metrics_dict.deepcopy()
+	summary = deepcopy(metrics_dict)
 
 	for set_name, set_dict in metrics_dict.iteritems():
 		for sampling_pct, sampling_dict in set_dict.iteritems():
 			for strategy, strategy_dict in sampling_dict.iteritems():
-				for clf, metrics_all_folds in strategy_dict.iteritems():
-					this_summary = _summarize_metrics_folds(metrics_all_folds)
-					summary[set_name][sampling_pct][strategy][clf] = this_summary
+				for clf, metrics_folds in strategy_dict.iteritems():
+					print metrics_folds
+					sys.exit()
+					cur_summary = _summarize_metrics_folds(metrics_folds)
+					summary[set_name][sampling_pct][strategy][clf] = cur_summary
 
 	return summary
 
@@ -182,14 +192,14 @@ def _calculate_key_summary(metrics_list_dict):
 	key_summary = {}
 	metric_names = key_summary[0].keys()
 
-	for metric_name in metric_names:
-		means = [score_tuple[0] in metrics_list_dict[i][metric_name] for i in xrange(len(metrics_list_dict))]
-		stds = [score_tuple[1] in metrics_list_dict[i][metric_name] for i in xrange(len(metrics_list_dict))]
+	for metric in metric_names:
+		means = [score_tuple[0] in metrics_list_dict[i][metric] for i in xrange(len(metrics_list_dict))]
+		stds = [score_tuple[1] in metrics_list_dict[i][metric] for i in xrange(len(metrics_list_dict))]
 		mean_of_means = np.mean(means)
 		std_of_means = np.std(means)
 		mean_of_stds = np.mean(stds)
 		std_of_stds = np.std(stds)
-		key_summary[metric_name] = [mean_of_means, std_of_means, mean_of_stds, std_of_stds]
+		key_summary[metric] = [mean_of_means, std_of_means, mean_of_stds, std_of_stds]
 
 	return key_summary
 
