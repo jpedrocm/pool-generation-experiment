@@ -94,7 +94,7 @@ def sample_training_data(sampling_percentage, possible_train_instances,
 	else:
 		return possible_train_instances, possible_train_labels
 
-def _g_mean_score(gold_labels, predicted_labels, average):
+def _g1_score(gold_labels, predicted_labels, average):
 	precision = precision_score(gold_labels, predicted_labels, average=average)
 	recall = recall_score(gold_labels, predicted_labels, average=average)
 	return sqrt(precision*recall)
@@ -102,8 +102,8 @@ def _g_mean_score(gold_labels, predicted_labels, average):
 def _calculate_metrics(gold_labels, predicted_labels):
 
 	metrics = {}
-	metrics["auc"] = roc_auc_score(gold_labels, predicted_labels, average='macro')
-	metrics["g_mean"] = _g_mean_score(gold_labels, predicted_labels, average='macro')
+	metrics["auc_roc"] = roc_auc_score(gold_labels, predicted_labels, average='macro')
+	metrics["g1"] = _g1_score(gold_labels, predicted_labels, average='macro')
 	metrics["f1"] = f1_score(gold_labels, predicted_labels, average='macro')
 	metrics["acc"] = accuracy_score(gold_labels, predicted_labels)
 
@@ -167,21 +167,43 @@ def summarize_metrics_folds(metrics_dict):
 	return summary
 
 def pandanize_summary(summary):
-	
+
 	df = pd.DataFrame(columns = ['set', 'sampling', 'strategy', 'clf',
-	                  'auc', 'acc', 'f1', 'g_mean'])
+	                  'mean_auc_roc', 'std_auc_roc', 'mean_acc', 'std_acc',
+	                  'mean_f1', 'std_f1', 'mean_g1', 'std_g1'])
 
 	for set_name, set_dict in summary.iteritems():
 		for sampling_pct, sampling_dict in set_dict.iteritems():
 			for strategy, strategy_dict in sampling_dict.iteritems():
 				for clf, summary_folds in strategy_dict.iteritems():
-					summary_folds["clf"] = clf
-					summary_folds["strategy"] = strategy
-					summary_folds["sampling"] = sampling_pct
-					summary_folds["set"] = set_name
-					df = df.append(summary_folds, ignore_index = True)
+					df_folds = pd.DataFrame(_unfilled_row(4, 8),
+						                    columns = df.columns)
+					_fill_dataframe_folds(df_folds, summary_folds, set_name,
+						                  sampling_pct, strategy, clf)
+					df = df.append(df_folds)
 
+	return df.reset_index(drop = True)
+
+def _unfilled_row(str_columns, float_columns):
+	row = [" " for i in xrange(str_columns)]
+	row.extend([0.0 for j in xrange(float_columns)])
+	return [row]
+
+def _fill_dataframe_folds(df, summary, set_name, sampling, strategy, clf):
+	df.at[0, "set"] = set_name
+	df.at[0, "sampling"] = sampling
+	df.at[0, "strategy"] = strategy
+	df.at[0, "clf"] = clf
+	return _fill_dataframe_metrics(df, summary)
+
+def _fill_dataframe_metrics(df, summary):
+	for key, metrics in summary.iteritems():
+		df.at[0, "mean_" + key] = metrics[0]
+		df.at[0, "std_" + key] = metrics[1]
 	return df
 
 def save_pandas_summary(pandas_summary):
 	pd.to_pickle(pandas_summary, '../results/results_summary.pkl')
+
+def read_pandas_summary():
+	return pd.read_pickle('../results/results_summary.pkl')
