@@ -33,21 +33,26 @@ The goal of this homework is to perform an experiment comparing two different po
 * Enter into the code/ folder in your local repository
 * Run the experiment to produce every ensemble's predictions
 ```
-python main.py
+python generate_predictions.py
 ```
-* Once finished, generate all results
+* Then, generate all metric results
 ```
 python generate_results.py
+```
+* Finally, compare the scenarios wanted
+```
+python compare_scenarios.py
 ```
 
 ## Project Structure
 
     .            
     ├── code                             # Code files
-    │   ├── generate_results.py          # generate metric results
-    │   ├── main.py                      # generate models predictions
-    │   ├── prefit_voting_classifier.py  # voting classifier for prefit base classifiers
-    │   └── utils.py                     # utils functions
+    |   ├── compare_scenarios.py         # Compare metric results 
+    │   ├── generate_results.py          # Generate metric results
+    │   ├── generate_predictions.py      # Generate models predictions
+    │   ├── prefit_voting_classifier.py  # Voting classifier for prefit base classifiers
+    │   └── utils.py                     # Utils functions
     ├── data                             # Datasets files
     ├── predictions                      # Models predictions files
     ├── results                          # Metrics files
