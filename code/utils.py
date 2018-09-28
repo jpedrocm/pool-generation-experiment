@@ -202,8 +202,42 @@ def _fill_dataframe_metrics(df, summary):
 		df.at[0, "std_" + key] = metrics[1]
 	return df
 
-def save_pandas_summary(pandas_summary):
-	pd.to_pickle(pandas_summary, '../results/results_summary.pkl')
+def save_pandas_summary(df):
+	pd.to_pickle(df, '../metrics/metrics_summary.pkl')
 
 def read_pandas_summary():
-	return pd.read_pickle('../results/results_summary.pkl')
+	return pd.read_pickle('../metrics/metrics_summary.pkl')
+
+def separate_pandas_summary(df, separate_sets):
+	dfs = []
+
+	if separate_sets is True:
+		sets = df["set"].unique()
+		for set_name in sets:
+			dfs.append(df.loc[df["set"]==set_name])
+	else:
+		dfs.append(df)
+
+	return dfs
+
+def write_comparison(dfs, focus_columns, filename):
+
+	with open('../comparisons/'+ filename + '.txt', "w") as outfile:
+		for df_set in dfs:
+			if len(dfs) == 1:
+				outfile.write("\n\nDATASET: Mixed\n")
+			else:
+				outfile.write("\n\nDATASET: " + df_set.iat[0,0] + "\n")
+			outfile.write("Mean of metrics\n")
+			outfile.write(df_set.groupby(by=focus_columns).mean().to_string())
+			outfile.write("\n\nStd of metrics\n")
+			outfile.write(df_set.groupby(by=focus_columns).std().to_string())
+			outfile.write("\n")
+			outfile.write("-------------------------------------------------")
+
+def bool_str(s):
+
+    if s not in {'False', 'True'}:
+        raise ValueError('Not a valid boolean string')
+
+    return s == 'True'
