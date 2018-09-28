@@ -1,0 +1,29 @@
+
+
+DATASET: jm1
+Mean of metrics
+                  mean_auc_roc  std_auc_roc  mean_acc   std_acc   mean_f1    std_f1   mean_g1    std_g1
+strategy                                                                                               
+Bagging               0.577485     0.022155  0.784709  0.024068  0.581675  0.027028  0.608551  0.022672
+Random Subspaces      0.566919     0.019493  0.808001  0.010269  0.571208  0.027339  0.621542  0.021419
+
+Std of metrics
+                  mean_auc_roc  std_auc_roc  mean_acc   std_acc   mean_f1    std_f1   mean_g1    std_g1
+strategy                                                                                               
+Bagging               0.008378     0.007930  0.033264  0.020995  0.017569  0.009563  0.030737  0.007745
+Random Subspaces      0.017793     0.007581  0.013630  0.008349  0.027945  0.012463  0.029932  0.005611
+-------------------------------------------------
+
+DATASET: cm1
+Mean of metrics
+                  mean_auc_roc  std_auc_roc  mean_acc   std_acc   mean_f1    std_f1   mean_g1    std_g1
+strategy                                                                                               
+Bagging               0.506157     0.025210  0.896014  0.013393  0.484276  0.030431  0.487495  0.036867
+Random Subspaces      0.511875     0.024252  0.897340  0.014212  0.494732  0.035631  0.503943  0.051619
+
+Std of metrics
+                  mean_auc_roc  std_auc_roc  mean_acc   std_acc   mean_f1    std_f1   mean_g1    std_g1
+strategy                                                                                               
+Bagging               0.011937     0.030106  0.006014  0.007965  0.014609  0.034599  0.018722  0.043760
+Random Subspaces      0.016080     0.024399  0.004325  0.009005  0.025077  0.036049  0.034899  0.053408
+-------------------------------------------------
