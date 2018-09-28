@@ -145,11 +145,11 @@ def generate_metrics(predictions_dict):
 
 def _summarize_metrics_folds(metrics_folds):
 	summary = {}
-	metrics = metrics_folds[0].keys()
+	metric_names = metrics_folds[0].keys()
 
-	for metric in metrics:
-		scores = [scr for scr in metrics_folds[i][metric] for i in xrange(len(metrics_folds))]
-		summary[metric] = [np.mean(scores), np.std(scores)]
+	for metric_name in metric_names:
+		scores = [metrics_folds[i][metric_name] for i in xrange(len(metrics_folds))]
+		summary[metric_name] = [np.mean(scores), np.std(scores)]
 
 	return summary
 
@@ -161,51 +161,27 @@ def summarize_metrics_folds(metrics_dict):
 		for sampling_pct, sampling_dict in set_dict.iteritems():
 			for strategy, strategy_dict in sampling_dict.iteritems():
 				for clf, metrics_folds in strategy_dict.iteritems():
-					print metrics_folds
-					sys.exit()
 					cur_summary = _summarize_metrics_folds(metrics_folds)
 					summary[set_name][sampling_pct][strategy][clf] = cur_summary
 
 	return summary
 
-def summarize_metrics_pool(metrics_dict):
-	pool_summary = {}
+def pandanize_summary(summary):
+	
+	df = pd.DataFrame(columns = ['set', 'sampling', 'strategy', 'clf',
+	                  'auc', 'acc', 'f1', 'g_mean'])
 
-	for set_name, set_dict in metrics_dict.iteritems():
+	for set_name, set_dict in summary.iteritems():
 		for sampling_pct, sampling_dict in set_dict.iteritems():
 			for strategy, strategy_dict in sampling_dict.iteritems():
-				if strategy not in pool_summary.keys():
-					pool_summary[strategy] = []
-				for clf, metrics_summary in strategy_dict.iteritems():
-					pool_summary[strategy].append(metrics_summary)
+				for clf, summary_folds in strategy_dict.iteritems():
+					summary_folds["clf"] = clf
+					summary_folds["strategy"] = strategy
+					summary_folds["sampling"] = sampling_pct
+					summary_folds["set"] = set_name
+					df = df.append(summary_folds, ignore_index = True)
 
-	return _calculate_summary(pool_summary)
+	return df
 
-def _calculate_summary(point_summary):
-	summary = {}
-	for key, metrics_list in point_summary.iteritems():
-		summary[key] = _calculate_key_summary(metrics_list)
-
-	return summary
-
-def _calculate_key_summary(metrics_list_dict):
-	key_summary = {}
-	metric_names = key_summary[0].keys()
-
-	for metric in metric_names:
-		means = [score_tuple[0] in metrics_list_dict[i][metric] for i in xrange(len(metrics_list_dict))]
-		stds = [score_tuple[1] in metrics_list_dict[i][metric] for i in xrange(len(metrics_list_dict))]
-		mean_of_means = np.mean(means)
-		std_of_means = np.std(means)
-		mean_of_stds = np.mean(stds)
-		std_of_stds = np.std(stds)
-		key_summary[metric] = [mean_of_means, std_of_means, mean_of_stds, std_of_stds]
-
-	return key_summary
-
-
-def save_metrics_summary(metrics_summary, filename):
-	with open('../results/' + filename + '.txt', 'w') as outfile:
-		for key in metrics_summary:
-			print key
-			print metrics_summary[key]
+def save_pandas_summary(pandas_summary):
+	pd.to_pickle(pandas_summary, '../results/results_summary.pkl')
