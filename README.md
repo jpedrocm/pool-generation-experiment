@@ -49,7 +49,7 @@ python compare_scenarios.py [-f FILENAME] [-s SEPARATE] [-c1 COLUMN1] [-c2 COLUM
     .            
     ├── code                             # Code files
     |   ├── compare_scenarios.py         # Compare metric results 
-    │   ├── generate_results.py          # Generate metric results
+    │   ├── generate_metrics.py          # Generate metric results
     │   ├── generate_predictions.py      # Generate models predictions
     │   ├── prefit_voting_classifier.py  # Voting classifier for prefit base classifiers
     │   └── utils.py                     # Utils functions
