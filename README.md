@@ -1,7 +1,7 @@
 # Homework 1
 
 ![python](https://img.shields.io/badge/python-2.7-blue.svg)
-![status](https://img.shields.io/badge/status-in%20progress-yellow.svg)
+![status](https://img.shields.io/badge/status-finished-green.svg)
 ![license](https://img.shields.io/badge/license-MIT-green.svg)
 
 This is the first homework for the Multiple Classifiers System's class.
