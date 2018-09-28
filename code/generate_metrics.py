@@ -8,11 +8,11 @@ if __name__ == "__main__":
 	print "Loading data"
 	predictions_dict = load_predictions()
 
-	print "Started analysis"
+	print "Started calculation"
 	metrics_dict = generate_metrics(predictions_dict)
 	summary = summarize_metrics_folds(metrics_dict)
-	print "Finished analysis"
+	print "Finished calculation"
 
 	pd_summary = pandanize_summary(summary)
 	save_pandas_summary(pd_summary)
-	print "Stored results"
+	print "Stored metrics"

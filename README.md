@@ -35,13 +35,13 @@ The goal of this homework is to perform an experiment comparing two different po
 ```
 python generate_predictions.py
 ```
-* Then, generate all metric results
+* Generate all metric results
 ```
-python generate_results.py
+python generate_metrics.py
 ```
-* Finally, compare the scenarios wanted
+* Then, compare the scenarios wanted
 ```
-python compare_scenarios.py
+python compare_scenarios.py [-f FILENAME] [-s SEPARATE] [-c1 COLUMN1] [-c2 COLUMN2]
 ```
 
 ## Project Structure
@@ -53,9 +53,10 @@ python compare_scenarios.py
     │   ├── generate_predictions.py      # Generate models predictions
     │   ├── prefit_voting_classifier.py  # Voting classifier for prefit base classifiers
     │   └── utils.py                     # Utils functions
+    ├── comparisons                      # Result comparison files
     ├── data                             # Datasets files
+    ├── metrics                          # Metrics files
     ├── predictions                      # Models predictions files
-    ├── results                          # Metrics files
     ├── LICENSE.md
     └── README.md
 
