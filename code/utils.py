@@ -15,7 +15,7 @@ from sklearn.ensemble import BaggingClassifier
 from sklearn.metrics import accuracy_score, f1_score, roc_auc_score
 from sklearn.metrics import precision_score, recall_score
 
-from prefit_voting_classifier import VotingClassifier
+from prefit_voting_classifier import PrefitVotingClassifier
 
 
 def load_experiment_configuration():
@@ -71,7 +71,7 @@ def get_voting_clf(pool_clf):
 	clfs_feats = pool_clf.estimators_features_
 	pool_size = len(base_clfs)
 	clfs_tuples = [(str(i), base_clfs[i]) for i in xrange(pool_size)]
-	return VotingClassifier(clfs_tuples, clfs_feats, voting = 'hard')
+	return PrefitVotingClassifier(clfs_tuples, clfs_feats, voting = 'hard')
 
 def save_predictions(data):
 	with open('../predictions/all_predictions.json', 'w') as outfile:
